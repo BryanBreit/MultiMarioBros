@@ -43,7 +43,7 @@ public abstract class GameElement extends Observable {
 		this.velocity = this.velocity.sum(this.acceleration);
 		changePosition(newPosition);
 	}
-	public void undoMove() {
+	public void undoMove(GameElement rightObj) {
 		this.velocity = this.velocity.substract(this.acceleration);
 		Vector2D newPosition = this.position.substract(this.velocity);
 		changePosition(newPosition);
