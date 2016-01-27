@@ -36,7 +36,7 @@ public class PlayerView extends GameElementView {
 
 	private void defineAnimationForDirection() {
 		Direction direction = this.player.getDirection();
-		if (this.animationsMap.containsKey(direction)) {
+		if (this.animationsMap.containsKey(direction)&& this.player.getVelocity().getX()!=0) {
 			Animation animation = this.animationsMap.get(direction);
 			this.getSprite().changeCurrentAnimation(animation);
 		}
