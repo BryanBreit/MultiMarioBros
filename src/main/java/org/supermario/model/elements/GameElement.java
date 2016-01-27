@@ -12,6 +12,7 @@ public abstract class GameElement extends Observable {
 	private Vector2D position;
 	private Vector2D velocity;
 	private Vector2D acceleration;
+	private boolean left=false;
 	
 	public GameElement(int x, int y) {
 		this.position = new Vector2D(x,y);
@@ -35,6 +36,16 @@ public abstract class GameElement extends Observable {
 	public abstract Rectangle[] getBoundaries() ;
 	protected abstract void changeBoundariesPosition(Vector2D newPosition);
 
+	public boolean isOnFloor(GameElement targetObj) {
+		for (Rectangle r1 : this.getBoundaries()) {
+			for (Rectangle r2: targetObj.getBoundaries()) {
+				if (r1.onFloor(r2))
+					return true;
+			}
+		}
+		return false;
+	}
+	
 	public void resolveCollisionWith(GameElement rightObj) {
 		this.undoMove();
 	}
@@ -44,8 +55,16 @@ public abstract class GameElement extends Observable {
 		changePosition(newPosition);
 	}
 	public void undoMove() {
+		int h = GameConstants.MARIO_HEIGHT - GameConstants.BOUNDARIES_TOLERANCE;
 		this.velocity = this.velocity.substract(this.acceleration);
-		Vector2D newPosition = this.position.substract(this.velocity);
+		Vector2D newPosition=this.position;
+		for (Rectangle r1 : rightObj.getBoundaries()) {
+			if (this.position.getY()+h/2>r1.getTopLeft().getY()-10 && this.position.getY()+h/2<r1.getBottomRight().getY()-10) {
+				newPosition = this.position.substract(this.velocity);
+				newPosition.setY(r1.getTopLeft().getY()-2-h/2);
+			}
+		else {newPosition = this.position.substract(this.velocity);}
+		}
 		changePosition(newPosition);
 	}
 
@@ -75,7 +94,7 @@ public abstract class GameElement extends Observable {
 	}
 	
 	public Direction getDirection() {
-		if (velocity.getX() < 0)
+		if (this.left)
 			return Direction.LEFT;
 		else
 			return Direction.RIGHT;
@@ -87,5 +106,17 @@ public abstract class GameElement extends Observable {
 	
 	public Vector2D getVelocity() {
 		return this.velocity;
+	}
+	
+	public Vector2D getAcceleration() {
+		return this.acceleration;
+	}
+	
+	public void setLeft(boolean bool) {
+		this.left=bool;
+	}
+	
+	public boolean getLeft() {
+		return this.left;
 	}
 }
