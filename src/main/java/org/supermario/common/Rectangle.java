@@ -12,6 +12,14 @@ public class Rectangle {
 		this.height = height;
 		this.computeBoundaries(centerPosition);
 	}
+	
+	public Vector2D getTopLeft() {
+		return this.topLeft;
+	}
+	
+	public Vector2D getBottomRight() {
+		return this.bottomRight;
+	}
 
 	public void moveAbsolute(Vector2D centerPosition) {
 		this.computeBoundaries(centerPosition);
@@ -22,6 +30,12 @@ public class Rectangle {
 				|| bottomRight.getY() < target.topLeft.getY()
 				|| topLeft.getX() > target.bottomRight.getX()
 				|| topLeft.getY() > target.bottomRight.getY()); 
+	}
+	
+	public boolean onFloor(Rectangle target) {
+		return (this.bottomRight.getY() > target.topLeft.getY()-10 && target.topLeft.getY()>=this.bottomRight.getY() &&
+				((this.bottomRight.getX() >= target.topLeft.getX() && this.bottomRight.getX() <= target.bottomRight.getX()) ||
+				 (this.topLeft.getX() <= target.bottomRight.getX() && this.topLeft.getX() >= target.topLeft.getX()))); 
 	}
 	
 	private void computeBoundaries(Vector2D centerPosition) {
