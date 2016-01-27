@@ -27,6 +27,7 @@ public class Game extends Observable implements Runnable {
 			long loopStart = System.currentTimeMillis();
 			this.moveElements();
 			this.checkCollisions();
+			this.checkOnFloor();
 			this.setChanged();
 			this.notifyObservers();
 			
@@ -69,6 +70,17 @@ public class Game extends Observable implements Runnable {
 	public void accept(GameElementVisitor visitor) {
 		for (GameElement element : this.elements) {
 			element.accept(visitor);			
+		}
+	}
+	
+	public void checkOnFloor() {
+		for (GameElement leftObj : this.elements) {
+			if (leftObj != this.player && this.player.isOnFloor(leftObj)) {
+				return;
+			}
+		}
+		if (this.player.getAcceleration().getY()==0) {
+			this.player.fall();
 		}
 	}
 
