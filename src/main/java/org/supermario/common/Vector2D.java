@@ -17,6 +17,10 @@ public class Vector2D {
 		return y;
 	}
 	
+	public void setY(int val) {
+		this.y=val;
+	}
+	
 	public Vector2D sum(Vector2D other) {
 		return new Vector2D(this.x + other.x, this.y + other.y);
 	}
