@@ -13,6 +13,9 @@ public class Player extends GameElement {
 	private final static Vector2D diffVelocityJump = new Vector2D(0, -2 * GameConstants.MARIO_WALK_STEP);
 	private final static Vector2D diffGravityAcceleration = new Vector2D(0, GameConstants.GRAVITY_ACCELERATION);
 
+	private boolean tostop=false;
+	private boolean toleft=false;
+	private boolean toright=false;
 	private Rectangle boundaries;
 
 	public Player(int x, int y) {
@@ -31,27 +34,66 @@ public class Player extends GameElement {
 		super.resolveCollisionWith(rightObj);
 		this.changeAcceleration(new Vector2D(0, 0));
 		this.changeVelocity(new Vector2D(this.getVelocity().getX(), 0));
+		if (tostop) {
+			this.changeVelocity(new Vector2D(0, 0));
+			tostop=false;
+		}
+		else {this.changeVelocity(new Vector2D(this.getVelocity().getX(), 0));}
+		if (toleft) {
+			this.goLeft();
+			toleft=false;
+		}
+		else if (toright) {
+			this.goRight();
+			toright=false;
+		}
 	}
 
 	public void goLeft() {
-		this.addToVelocity(diffVelocityLeft);
+		if (this.getAcceleration().getY()==0 || this.getVelocity().getX()==0) {
+			this.addToVelocity(diffVelocityLeft);
+			this.setLeft(true);
+		}
+		else{toleft=true;
+			toright=false;}
 	}
 	
 	public void goRight() {
-		this.addToVelocity(diffVelocityRight);
+		if (this.getAcceleration().getY()==0 || this.getVelocity().getX()==0) {
+			this.addToVelocity(diffVelocityRight);
+			this.setLeft(false);
+		}
+		else{toright=true;
+			toleft=false;}
 	}
 
 	public void jump() {
-		this.addToVelocity(diffVelocityJump);
-		this.addToAcceleration(diffGravityAcceleration);
+		if (this.getAcceleration().getY()==0) {
+			this.addToVelocity(diffVelocityJump);
+			fall();
+		}
 	}
 
+	public void fall() {
+		this.getAcceleration().setY(diffGravityAcceleration.getY());
+	}
+	
 	public void stopLeft() {
-		this.addToVelocity(diffVelocityLeft.negative());
+		if (this.getAcceleration().getY()==0 && this.getVelocity().getX()<0) {
+			this.addToVelocity(diffVelocityLeft.negative());
+		}
+		else{tostop=true;
+			toright=false;
+			toleft=false;}
 	}
 	
 	public void stopRight() {
-		this.addToVelocity(diffVelocityRight.negative());
+		if (this.getAcceleration().getY()==0 && this.getVelocity().getX()>0) {
+			this.addToVelocity(diffVelocityRight.negative());
+		}
+		else{tostop=true;
+			toright=false;
+			toleft=false;}
 	}
 
 	@Override
