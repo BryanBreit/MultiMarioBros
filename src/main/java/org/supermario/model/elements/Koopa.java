@@ -55,6 +55,10 @@ public class Koopa extends GameElement {
 	public void resolveCollisionWith(GameElement rightObj) {
 		super.resolveCollisionWith(rightObj);
 		this.changeVelocity(this.getVelocity().negative());
+		if (this.getLeft()) {
+			this.setLeft(false);
+		}
+		else {this.setLeft(true);}
 	}
 
 }
